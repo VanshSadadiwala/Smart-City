@@ -8,11 +8,18 @@
     "dev": "nodemon server.js",
     "seed": "node utils/seedRoles.js"
   },
-  "keywords": ["smart-city", "rbac", "node", "express", "mongodb"],
+  "keywords": [
+    "smart-city",
+    "rbac",
+    "node",
+    "express",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
     "dotenv": "^16.0.0",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",

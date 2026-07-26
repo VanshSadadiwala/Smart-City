@@ -12,6 +12,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require("cors");
 
 // Load environment variables from .env file
 dotenv.config();
@@ -27,7 +28,13 @@ const app = express();
 
 // Parse incoming JSON request bodies
 app.use(express.json());
-
+  
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 // Parse URL-encoded bodies (for form submissions)
 app.use(express.urlencoded({ extended: true }));
 
