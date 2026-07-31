@@ -20,6 +20,7 @@ dotenv.config();
 // Import route files
 const authRoutes = require('./routes/auth.routes');
 const complaintRoutes = require('./routes/complaint.routes');
+const userRoutes = require("./routes/user.routes");
 
 // Create Express application
 const app = express();
@@ -45,6 +46,8 @@ app.use('/api/auth', authRoutes);
 
 // Complaint routes: /api/complaints (CRUD)
 app.use('/api/complaints', complaintRoutes);
+
+app.use("/api/users", userRoutes);
 
 // ─── Health Check Route ───────────────────────────────────────────────────────
 

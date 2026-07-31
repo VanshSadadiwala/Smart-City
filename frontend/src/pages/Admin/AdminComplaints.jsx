@@ -1,18 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import DashboardLayout from "../../layouts/DashboardLayout";
 import api from "../../services/api";
 
-function OfficerDashboard() {
+function AdminComplaints() {
   const [complaints, setComplaints] = useState([]);
   const [workers, setWorkers] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [assigning, setAssigning] = useState("");
-
-  const messageRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -29,20 +27,12 @@ function OfficerDashboard() {
       ]);
 
       setComplaints(complaintsResponse.data.complaints || []);
+
       setWorkers(workersResponse.data.users || []);
     } catch (err) {
-      console.error("Officer Dashboard Error:", err);
+      console.error("Admin Complaints Error:", err);
 
-      setError(
-        err.response?.data?.message || "Unable to load officer dashboard.",
-      );
-
-      setTimeout(() => {
-        messageRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 100);
+      setError(err.response?.data?.message || "Unable to load complaints.");
     } finally {
       setLoading(false);
     }
@@ -54,33 +44,16 @@ function OfficerDashboard() {
     try {
       setAssigning(complaintId);
       setError("");
-      setSuccess("");
 
       await api.put(`/complaints/${complaintId}/assign`, {
         workerId,
       });
 
       await fetchData();
-
-      setSuccess("Complaint assigned to worker successfully.");
-
-      setTimeout(() => {
-        messageRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 100);
     } catch (err) {
       console.error("Assign Worker Error:", err);
 
       setError(err.response?.data?.message || "Unable to assign complaint.");
-
-      setTimeout(() => {
-        messageRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }, 100);
     } finally {
       setAssigning("");
     }
@@ -110,65 +83,14 @@ function OfficerDashboard() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white">Officer Dashboard</h1>
+          <h1 className="text-3xl font-bold text-white">Manage Complaints</h1>
 
           <p className="text-slate-400 mt-2">
-            Manage complaints and assign them to workers.
+            View all complaints and assign them to workers.
           </p>
         </div>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6">
-            <p className="text-slate-400 text-sm">Total Complaints</p>
-
-            <p className="text-3xl font-bold text-white mt-2">
-              {complaints.length}
-            </p>
-          </div>
-
-          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6">
-            <p className="text-slate-400 text-sm">Pending</p>
-
-            <p className="text-3xl font-bold text-yellow-400 mt-2">
-              {complaints.filter((c) => c.status === "Pending").length}
-            </p>
-          </div>
-
-          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6">
-            <p className="text-slate-400 text-sm">In Progress</p>
-
-            <p className="text-3xl font-bold text-blue-400 mt-2">
-              {complaints.filter((c) => c.status === "In Progress").length}
-            </p>
-          </div>
-
-          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6">
-            <p className="text-slate-400 text-sm">Completed</p>
-
-            <p className="text-3xl font-bold text-green-400 mt-2">
-              {complaints.filter((c) => c.status === "Completed").length}
-            </p>
-          </div>
-        </div>
-
-        {/* Messages */}
-        {(error || success) && (
-          <div ref={messageRef}>
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-5 py-4 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="bg-green-500/10 border border-green-500/30 text-green-400 px-5 py-4 rounded-lg">
-                {success}
-              </div>
-            )}
-          </div>
-        )}
-
+        
         {/* Complaints */}
         <div className="bg-slate-900 border border-slate-700 rounded-xl overflow-hidden">
           <div className="px-6 py-5 border-b border-slate-700">
@@ -223,7 +145,7 @@ function OfficerDashboard() {
                       {/* Complaint */}
                       <td className="px-6 py-5">
                         <Link
-                          to={`/officer/complaints/${complaint._id}`}
+                          to={`/admin/complaints/${complaint._id}`}
                           className="font-medium text-white hover:text-blue-400 transition"
                         >
                           {complaint.title}
@@ -273,20 +195,19 @@ function OfficerDashboard() {
                               {complaint.assignedTo.email}
                             </p>
                           </div>
-                        ) : assigning === complaint._id ? (
-                          <div className="bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-slate-400">
-                            Assigning...
-                          </div>
                         ) : (
                           <select
                             defaultValue=""
+                            disabled={assigning === complaint._id}
                             onChange={(e) =>
                               assignWorker(complaint._id, e.target.value)
                             }
-                            className="bg-slate-800 text-white border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 cursor-pointer"
+                            className="bg-slate-800 text-white border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-50"
                           >
                             <option value="" disabled hidden>
-                              Select Worker
+                              {assigning === complaint._id
+                                ? "Assigning..."
+                                : "Select Worker"}
                             </option>
 
                             {workers.map((worker) => (
@@ -309,4 +230,4 @@ function OfficerDashboard() {
   );
 }
 
-export default OfficerDashboard;
+export default AdminComplaints;

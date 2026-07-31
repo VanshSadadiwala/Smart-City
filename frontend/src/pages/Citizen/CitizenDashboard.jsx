@@ -8,6 +8,7 @@ function CitizenDashboard() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
+
         <div>
           <h1 className="text-4xl font-bold text-white">
             Welcome back, {user?.name} 👋
@@ -21,6 +22,7 @@ function CitizenDashboard() {
         {/* Stats */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <p className="text-slate-400">Total Complaints</p>
             <h2 className="text-4xl font-bold mt-3">5</h2>
@@ -40,14 +42,19 @@ function CitizenDashboard() {
             <p className="text-green-400">Completed</p>
             <h2 className="text-4xl font-bold mt-3">2</h2>
           </div>
+
         </div>
 
         {/* Quick Actions */}
 
         <div className="bg-slate-800 rounded-xl border border-slate-700 p-6">
-          <h2 className="text-xl font-semibold mb-5">Quick Actions</h2>
+
+          <h2 className="text-xl font-semibold mb-5">
+            Quick Actions
+          </h2>
 
           <div className="flex gap-4">
+
             <Link
               to="/citizen/create"
               className="bg-blue-600 hover:bg-blue-700 px-5 py-3 rounded-lg"
@@ -61,15 +68,21 @@ function CitizenDashboard() {
             >
               My Complaints
             </Link>
+
           </div>
+
         </div>
 
         {/* Recent Complaints */}
 
         <div className="bg-slate-800 rounded-xl border border-slate-700 p-6">
-          <h2 className="text-xl font-semibold mb-5">Recent Complaints</h2>
+
+          <h2 className="text-xl font-semibold mb-5">
+            Recent Complaints
+          </h2>
 
           <div className="space-y-4">
+
             <div className="flex justify-between border-b border-slate-700 pb-3">
               <span>Broken Street Light</span>
               <span className="text-yellow-400">Pending</span>
@@ -84,8 +97,11 @@ function CitizenDashboard() {
               <span>Garbage Collection</span>
               <span className="text-blue-400">In Progress</span>
             </div>
+
           </div>
+
         </div>
+
       </div>
     </DashboardLayout>
   );

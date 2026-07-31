@@ -54,74 +54,74 @@ const generateToken = (userId) => {
  */
 const signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     // ── Step 1: Basic input validation ───────────────────────────────────────
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide name, email, password, and role.',
+        message: "Please provide name, email, and password.",
       });
     }
 
     // ── Step 2: Check if email already registered ─────────────────────────────
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return res.status(409).json({  // 409 Conflict
-        success: false,
-        message: 'An account with this email already exists. Please log in.',
-      });
-    }
-
-    // ── Step 3: Find the role in the database ─────────────────────────────────
-    // The client sends role as a string like 'citizen'
-    // We look it up in the Role collection to get its ObjectId
-    const roleDoc = await Role.findOne({ name: role.toLowerCase() });
-    if (!roleDoc) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid role: "${role}". Allowed roles: citizen, worker, officer, admin`,
-      });
-    }
-
-    // ── Step 4: Create the user ───────────────────────────────────────────────
-    // The User model's pre-save hook will automatically hash the password
-    const newUser = await User.create({
-      name,
-      email,
-      password,
-      role: roleDoc._id, // Store the ObjectId reference, not the string
+    const existingUser = await User.findOne({
+      email: email.toLowerCase(),
     });
 
-    // ── Step 5: Generate JWT token ────────────────────────────────────────────
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "An account with this email already exists. Please log in.",
+      });
+    }
+
+    // ── Step 3: Public registration ALWAYS creates a citizen ─────────────────
+    const roleDoc = await Role.findOne({ name: "citizen" });
+
+    if (!roleDoc) {
+      return res.status(500).json({
+        success: false,
+        message: "Citizen role is not configured.",
+      });
+    }
+
+    // ── Step 4: Create user ───────────────────────────────────────────────────
+    const newUser = await User.create({
+      name,
+      email: email.toLowerCase(),
+      password,
+      role: roleDoc._id,
+    });
+
+    // ── Step 5: Generate JWT ──────────────────────────────────────────────────
     const token = generateToken(newUser._id);
 
-    // Prepare response (fetch user with populated role, no password)
     const userResponse = await User.findById(newUser._id)
-      .populate('role', 'name description')
-      .select('-password');
+      .populate("role", "name description")
+      .select("-password");
 
-    res.status(201).json({  // 201 Created
+    res.status(201).json({
       success: true,
-      message: 'Account created successfully!',
+      message: "Account created successfully!",
       token,
       user: userResponse,
     });
-
   } catch (error) {
-    // Handle Mongoose validation errors
-    if (error.name === 'ValidationError') {
+    if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((e) => e.message);
+
       return res.status(400).json({
         success: false,
-        message: messages.join('. '),
+        message: messages.join(". "),
       });
     }
 
-    console.error('Signup Error:', error);
+    console.error("Signup Error:", error);
+
     res.status(500).json({
       success: false,
-      message: 'Server error during signup. Please try again.',
+      message: "Server error during signup. Please try again.",
     });
   }
 };

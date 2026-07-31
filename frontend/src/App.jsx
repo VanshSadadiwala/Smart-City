@@ -8,9 +8,15 @@ import OfficerDashboard from "./pages/Officer/OfficerDashboard";
 import WorkerDashboard from "./pages/Worker/WorkerDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 
+import AdminComplaints from "./pages/Admin/AdminComplaints";
+import AdminStaff from "./pages/Admin/AdminStaff";
+
 import CreateComplaint from "./pages/Citizen/CreateComplaint";
 import MyComplaints from "./pages/Citizen/MyComplaints";
 import ComplaintDetails from "./pages/Citizen/ComplaintDetails";
+import WorkerComplaintDetails from "./pages/Worker/WorkerComplaintDetails";
+import OfficerComplaintDetails from "./pages/Officer/OfficerComplaintDetails";
+import AdminComplaintDetails from "./pages/Admin/AdminComplaintDetails";
 
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
@@ -101,6 +107,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/worker/complaints/:id"
+          element={
+            <ProtectedRoute allowedRole="worker">
+              <WorkerComplaintDetails />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Officer */}
         <Route
@@ -111,6 +125,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/officer/complaints/:id"
+          element={
+            <ProtectedRoute allowedRole="officer">
+              <OfficerComplaintDetails />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin */}
         <Route
@@ -118,6 +140,31 @@ function App() {
           element={
             <ProtectedRoute allowedRole="admin">
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/complaints"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminComplaints />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/staff"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminStaff />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/complaints/:id"
+          element={
+            <ProtectedRoute allowedRole="admin">
+              <AdminComplaintDetails />
             </ProtectedRoute>
           }
         />
