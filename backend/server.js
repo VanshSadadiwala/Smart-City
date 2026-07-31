@@ -33,6 +33,7 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://smart-city-like-surat.vercel.app",
+  "https://smart-city-git-development-vansh-sadadiwalas-projects.vercel.app",
 ];
 
 app.use(
