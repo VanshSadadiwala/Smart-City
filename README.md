@@ -36,7 +36,7 @@ Build a scalable smart city platform that combines:
 
 ---
 
-## 🚧 Phase 2 — Frontend (In Progress)
+## 🚧 Phase 2 — Frontend 
 
 - React + Vite
 - Tailwind CSS
@@ -50,7 +50,7 @@ Build a scalable smart city platform that combines:
 
 ---
 
-## 🔜 Phase 3 — Advanced Features
+## 🔜 Phase 3 — Advanced Features (In Progress)
 
 - Complaint Heatmaps
 - Charts & Analytics
